@@ -13,7 +13,7 @@ require('mason').setup({
 require('mason-lspconfig').setup({
       -- A list of servers to automatically install if they're not already installed
       -- full list of options at https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
-    ensure_installed = { 'pylsp', 'lua_ls', 'rust_analyzer', 'tsserver', 'bash_language_server' },
+    ensure_installed = { 'pylsp', 'lua_ls', 'rust_analyzer', 'tsserver', 'bashls' },
 })
 
 -- Set different settings for different languages' LSP
@@ -52,5 +52,5 @@ lspconfig.tsserver.setup({
     },
 })
 
-lspconfig.bash_language_server.setup({
+lspconfig.bashls.setup({
 })
