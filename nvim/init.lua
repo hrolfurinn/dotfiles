@@ -1,6 +1,4 @@
-vim.cmd([[
-  :set number
-]])
+require('options')
 
 -- "bootstrapping" lazy.nvim from https://github.com/folke/lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
