@@ -14,6 +14,9 @@ vim.g.mapleader = " "        --idea taken from lazy nvim example
 -----------------
 -- Normal mode --
 -----------------
+-- Adjust scrolling behavior
+vim.keymap.set('n', '<C-d>', 'M<C-d>', opts)
+vim.keymap.set('n', '<C-u>', 'M<C-u>', opts)
 
 -- Hint: see `:h vim.map.set()`
 -- Better window navigation
