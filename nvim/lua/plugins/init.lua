@@ -36,6 +36,22 @@ require("lazy").setup({
   	"L3MON4D3/LuaSnip",
   	version = "v2.*",
   },
+  -- Bufferline (tabs displayed in typical GUI IDE manner)
+  {
+    "akinsho/bufferline.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+  },
+  --File system 
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    branch = "v3.x",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
+      "MunifTanjim/nui.nvim",
+      -- "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
+    },
+  },
   --LSP manager
   "williamboman/mason.nvim",
   "williamboman/mason-lspconfig.nvim",
@@ -51,5 +67,8 @@ require("lazy").setup({
     lazy = false,
     priority = 1000,
     opts = {},
+  },
+  {
+    "lewis6991/gitsigns.nvim",
   },
 })
