@@ -1,7 +1,7 @@
 -- Most initial elements taken from https://martinlwx.github.io/en/config-neovim-from-scratch/
 
 -- Hint: use `:h <option>` to figure out the meaning if needed
--- vim.opt.clipboard = 'unnamedplus'   -- use system clipboard 
+vim.opt.clipboard = 'unnamedplus'   -- use system clipboard 
 vim.opt.completeopt = {'menu', 'menuone', 'noselect'}
 vim.opt.mouse = 'a'                 -- allow the mouse to be used in Nvim
 
