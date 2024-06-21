@@ -1,6 +1,7 @@
 [window]
 opacity = 1.0
 decorations = "Full"
+dimensions = { columns = 100, lines = 50 }
 
 [font]
 normal = { family = "UbuntuMono Nerd Font Mono", style = "Regular" }
