@@ -14,7 +14,7 @@ require('mason').setup({
 require('mason-lspconfig').setup({
       -- A list of servers to automatically install if they're not already installed
       -- full list of options at https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
-    ensure_installed = { 'pylsp', 'lua_ls', 'rust_analyzer', 'tsserver', 'bashls', 'eslint' },
+    ensure_installed = { 'pylsp', 'lua_ls', 'rust_analyzer', 'ts_ls', 'bashls', 'eslint' },
 })
 
 -- Set different settings for different languages' LSP
@@ -39,7 +39,7 @@ lspconfig.rust_analyzer.setup({
 	},
 })
 
-lspconfig.tsserver.setup({
+lspconfig.ts_ls.setup({
     handlers = {
     ["workspace/executeCommand"] = function(_err, result, ctx, _config)
           if ctx.params.command ~= "_typescript.goToSourceDefinition" then
