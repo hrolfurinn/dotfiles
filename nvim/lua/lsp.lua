@@ -12,9 +12,9 @@ require('mason').setup({
 })
 
 require('mason-lspconfig').setup({
-      -- A list of servers to automatically install if they're not already installed
-      -- full list of options at https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
-    ensure_installed = { 'pylsp', 'lua_ls', 'rust_analyzer', 'ts_ls', 'bashls', 'eslint' },
+  -- A list of servers to automatically install if they're not already installed
+  -- full list of options at https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
+  ensure_installed = { 'pylsp', 'lua_ls', 'rust_analyzer', 'ts_ls', 'bashls', 'eslint', 'ruff' },
 })
 
 -- Set different settings for different languages' LSP
@@ -24,33 +24,42 @@ require('mason-lspconfig').setup({
 --     - on_attach: a lua callback function to run after LSP attaches to a given buffer
 local lspconfig = require("lspconfig")
 
-lspconfig.pylsp.setup({})
+local project_root = vim.fn.getcwd()
+extra_paths = { project_root }
+
+lspconfig.pylsp.setup({
+  cmd = { 'python3', '-m', 'pylsp' },
+})
 
 lspconfig.lua_ls.setup({})
 
+lspconfig.ruff.setup({
+  cmd = { 'python3', '-m', 'ruff', 'lsp' },
+})
+
 lspconfig.rust_analyzer.setup({
-  	settings = {
-		["rust-analyzer"] = {
-			inlayHints = {
-				-- Whether to show inlay hints after a closing } to indicate what item it belongs to.
-				closingBraceHints = true,
-			},
-		},
-	},
+  settings = {
+    ["rust-analyzer"] = {
+      inlayHints = {
+        -- Whether to show inlay hints after a closing } to indicate what item it belongs to.
+        closingBraceHints = true,
+      },
+    },
+  },
 })
 
 lspconfig.ts_ls.setup({
-    handlers = {
+  handlers = {
     ["workspace/executeCommand"] = function(_err, result, ctx, _config)
-          if ctx.params.command ~= "_typescript.goToSourceDefinition" then
-              return
-          end
-          if result == nil or #result == 0 then
-              return
-          end
-          vim.lsp.util.jump_to_location(result[1], "utf-8")
-      end,
-    },
+      if ctx.params.command ~= "_typescript.goToSourceDefinition" then
+        return
+      end
+      if result == nil or #result == 0 then
+        return
+      end
+      vim.lsp.util.jump_to_location(result[1], "utf-8")
+    end,
+  },
 })
 
 lspconfig.eslint.setup({})
