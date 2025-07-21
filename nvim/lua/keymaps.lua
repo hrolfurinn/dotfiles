@@ -2,13 +2,16 @@
 
 -- Inital setup taken from https://martinlwx.github.io/en/config-neovim-from-scratch/
 
+-- Initialize module to export lsp keymaps function
+local M = {}
+
 -- define common options
 local opts = {
-  noremap = true,      -- non-recursive
-  silent = true,       -- do not show message
+  noremap = true, -- non-recursive
+  silent = true,  -- do not show message
 }
 
-vim.g.mapleader = " "        --idea taken from lazy nvim example
+vim.g.mapleader = " " --idea taken from lazy nvim example
 -- vim.g.maplocalleader = "\\"  --idea taken from lazy nvim example
 
 -----------------
@@ -37,21 +40,25 @@ vim.keymap.set('n', '<Leader><Up>', ':resize +2<CR>', opts)
 vim.keymap.set('n', '<Leader><Left>', ':vertical resize -2<CR>', opts)
 vim.keymap.set('n', '<Leader><Right>', ':vertical resize +2<CR>', opts)
 
--- LSP keymaps
-vim.keymap.set('n', '<Leader>rr', vim.lsp.buf.rename, { desc = 'Rename' })
-
 -- Telescope
 -- taken from the offical README.md
 -- https://github.com/nvim-telescope/telescope.nvim?tab=readme-ov-file#usage
 local builtin = require('telescope.builtin')
 vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find files' })
 vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Telescope live grep' })
--- vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Telescope buffers' })
+vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Telescope buffers' })
 vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope help tags' })
+vim.keymap.set('n', '<leader>fo', builtin.oldfiles, { desc = 'Telescope old files' })
+vim.keymap.set('n', '<leader>ft', builtin.builtin, { desc = 'Telescope builtin' })
+-- TODO: Add a "find all" <leader>fa which calls :Telescope find_files follow=true, hidden=true no_ignore=true
 
---mine
-vim.keymap.set('n', '<leader>fr', builtin.lsp_references, { desc = 'Telescope LSP references' })
 
+-- Buffer navigation
+-- taken from https://medium.com/unixification/must-have-neovim-keymaps-51c283394070
+vim.keymap.set('n', '<tab>', ':bn<cr>', opts)
+vim.keymap.set('n', '<s-tab>', ':bp<cr>', opts)
+vim.keymap.set('n', '<leader>bd', ':bd<cr>', opts)
+--
 -----------------
 -- Visual mode --
 -----------------
@@ -60,3 +67,18 @@ vim.keymap.set('n', '<leader>fr', builtin.lsp_references, { desc = 'Telescope LS
 -- vim.keymap.set('v', '<', '<gv', opts)
 -- vim.keymap.set('v', '>', '>gv', opts)
 
+-----------------
+--  LSP  mode  --
+-----------------
+M.lsp_keymaps = function(bufnr)
+  local bufopts = function(desc)
+    return vim.tbl_extend('force', opts, { buffer = bufnr, desc = desc })
+  end
+
+  vim.keymap.set('n', '<leader>fr', builtin.lsp_references, bufopts('Telescope LSP references'))
+  vim.keymap.set('n', '<leader>rr', vim.lsp.buf.rename, bufopts('LSP rename'))
+  vim.keymap.set('n', 'gd', builtin.lsp_definitions, bufopts('Telescope LSP definition'))
+  vim.keymap.set('n', 'gD', builtin.lsp_implementations, bufopts('Telescope LSP implementation'))
+end
+
+return M
