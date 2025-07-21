@@ -1,5 +1,88 @@
 -- Taken from the guide at https://martinlwx.github.io/en/config-neovim-from-scratch/
 -- with further code taken from the repo https://github.com/MartinLwx/dotfiles/blob/main/nvim/lua/lsp.lua
+
+
+-- Set different settings for different languages' LSP
+-- LSP list: https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
+-- How to use setup({}): https://github.com/neovim/nvim-lspconfig/wiki/Understanding-setup-%7B%7D
+--     - the settings table is sent to the LSP
+--     - on_attach: a lua callback function to run after LSP attaches to a given buffer
+local lspconfig = require("lspconfig")
+
+-- Default options for Mason LSP setup
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
+local on_attach = function(client, bufnr)
+  require('keymaps').lsp_keymaps(bufnr)
+end
+local function make_config(opts)
+  return vim.tbl_deep_extend("force", { on_attach = on_attach, capabilities = capabilities }, opts or {})
+end
+
+local function get_configured_servers()
+  local configs = require("lspconfig.configs")
+  return vim.tbl_keys(configs)
+end
+
+local project_root = vim.fn.getcwd()
+extra_paths = { project_root }
+
+lsp_overrides = {
+  pylsp = {
+    cmd = { 'python', '-m', 'pylsp' },
+    settings = {
+      pylsp = {
+        plugins = {
+          -- CUse ruff for linting
+          jedi = {
+            extra_paths = { project_root },
+            environment = vim.env.VIRTUAL_ENV,
+          },
+          -- Use ruff for linting
+          pycodestyle = { enabled = false },
+          pyflakes = { enabled = false },
+          pylint = { enabled = false },
+        }
+      }
+    }
+  },
+
+  ruff = {
+      -- This uses the active Python binary on neovim launch, i.e. if the venv is enabled, it uses that.
+      cmd = { 'python', '-m', 'ruff', 'server' },
+    },
+
+  rust_analyzer = {
+    settings = {
+      ["rust-analyzer"] = {
+        inlayHints = {
+          -- Whether to show inlay hints after a closing } to indicate what item it belongs to.
+          closingBraceHints = true,
+        },
+      },
+    },
+  },
+
+  ts_ls = {
+    handlers = {
+      ["workspace/executeCommand"] = function(_err, result, ctx, _config)
+        if ctx.params.command ~= "_typescript.goToSourceDefinition" then
+          return
+        end
+        if result == nil or #result == 0 then
+          return
+        end
+        vim.lsp.util.jump_to_location(result[1], "utf-8")
+      end,
+    },
+  },
+}
+
+lsp_servers = { 'pylsp', 'lua_ls', 'rust_analyzer', 'ts_ls', 'bashls', 'eslint', 'ruff' }
+
+for _, server_name in ipairs(lsp_servers) do
+  vim.lsp.config(server_name, make_config(lsp_overrides[server_name]))
+end
+
 require('mason').setup({
   ui = {
     icons = {
@@ -14,55 +97,6 @@ require('mason').setup({
 require('mason-lspconfig').setup({
   -- A list of servers to automatically install if they're not already installed
   -- full list of options at https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
-  ensure_installed = { 'pylsp', 'lua_ls', 'rust_analyzer', 'ts_ls', 'bashls', 'eslint', 'ruff' },
+  ensure_installed = lsp_servers,
 })
 
--- Set different settings for different languages' LSP
--- LSP list: https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
--- How to use setup({}): https://github.com/neovim/nvim-lspconfig/wiki/Understanding-setup-%7B%7D
---     - the settings table is sent to the LSP
---     - on_attach: a lua callback function to run after LSP attaches to a given buffer
-local lspconfig = require("lspconfig")
-
-local project_root = vim.fn.getcwd()
-extra_paths = { project_root }
-
-lspconfig.pylsp.setup({
-  cmd = { 'python3', '-m', 'pylsp' },
-})
-
-lspconfig.lua_ls.setup({})
-
-lspconfig.ruff.setup({
-  cmd = { 'python3', '-m', 'ruff', 'lsp' },
-})
-
-lspconfig.rust_analyzer.setup({
-  settings = {
-    ["rust-analyzer"] = {
-      inlayHints = {
-        -- Whether to show inlay hints after a closing } to indicate what item it belongs to.
-        closingBraceHints = true,
-      },
-    },
-  },
-})
-
-lspconfig.ts_ls.setup({
-  handlers = {
-    ["workspace/executeCommand"] = function(_err, result, ctx, _config)
-      if ctx.params.command ~= "_typescript.goToSourceDefinition" then
-        return
-      end
-      if result == nil or #result == 0 then
-        return
-      end
-      vim.lsp.util.jump_to_location(result[1], "utf-8")
-    end,
-  },
-})
-
-lspconfig.eslint.setup({})
-
-lspconfig.bashls.setup({
-})
