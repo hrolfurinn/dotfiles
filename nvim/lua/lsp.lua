@@ -47,9 +47,9 @@ lsp_overrides = {
   },
 
   ruff = {
-      -- This uses the active Python binary on neovim launch, i.e. if the venv is enabled, it uses that.
-      cmd = { 'python', '-m', 'ruff', 'server' },
-    },
+    -- This uses the active Python binary on neovim launch, i.e. if the venv is enabled, it uses that.
+    cmd = { 'python', '-m', 'ruff', 'server' },
+  },
 
   rust_analyzer = {
     settings = {
@@ -100,3 +100,14 @@ require('mason-lspconfig').setup({
   ensure_installed = lsp_servers,
 })
 
+-- NVIM lint
+-- TODO: should this be in a new file?
+
+require('lint').linters_by_ft = {
+  python = { 'mypy' },
+}
+
+-- attempt to use venv
+local mypy = require('lint').linters.mypy
+mypy.cmd = 'python'
+mypy.args = vim.list_extend({ '-m', 'mypy' }, mypy.args)

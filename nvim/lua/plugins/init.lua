@@ -28,20 +28,20 @@ require("lazy").setup({
     end,
   },
   { "hrsh7th/cmp-nvim-lsp", dependencies = { "nvim-cmp" } },
-  { "hrsh7th/cmp-buffer", dependencies = { "nvim-cmp" } }, -- buffer auto-completion
-  { "hrsh7th/cmp-path", dependencies = { "nvim-cmp" } }, -- path auto-completion
-  { "hrsh7th/cmp-cmdline", dependencies = { "nvim-cmp" } }, -- cmdline auto-completion
+  { "hrsh7th/cmp-buffer",   dependencies = { "nvim-cmp" } }, -- buffer auto-completion
+  { "hrsh7th/cmp-path",     dependencies = { "nvim-cmp" } }, -- path auto-completion
+  { "hrsh7th/cmp-cmdline",  dependencies = { "nvim-cmp" } }, -- cmdline auto-completion
   -- Code snippet engine
   {
-  	"L3MON4D3/LuaSnip",
-  	version = "v2.*",
+    "L3MON4D3/LuaSnip",
+    version = "v2.*",
   },
   -- Bufferline (tabs displayed in typical GUI IDE manner)
   {
     "akinsho/bufferline.nvim",
     dependencies = { "nvim-tree/nvim-web-devicons" },
   },
-  --File system 
+  --File system
   {
     "nvim-neo-tree/neo-tree.nvim",
     branch = "v3.x",
@@ -73,10 +73,15 @@ require("lazy").setup({
   },
   --Telescope finder
   {
-    "nvim-telescope/telescope.nvim", tag = "0.1.8",
+    "nvim-telescope/telescope.nvim",
+    tag = "0.1.8",
     dependencies = {
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
     }
+  },
+  -- Linter manager (for mypy)
+  {
+    "mfussenegger/nvim-lint",
   },
 })
