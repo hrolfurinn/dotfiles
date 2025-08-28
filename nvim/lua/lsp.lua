@@ -104,10 +104,14 @@ require('mason-lspconfig').setup({
 -- TODO: should this be in a new file?
 
 require('lint').linters_by_ft = {
-  python = { 'mypy' },
+  python = { 'mypy', 'pylint' },
 }
 
 -- attempt to use venv
 local mypy = require('lint').linters.mypy
 mypy.cmd = 'python'
 mypy.args = vim.list_extend({ '-m', 'mypy' }, mypy.args)
+
+local pylint = require('lint').linters.pylint
+pylint.cmd = 'python'
+pylint.args = vim.list_extend({ '-m', 'pylint' }, pylint.args)
