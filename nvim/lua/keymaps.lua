@@ -58,7 +58,10 @@ vim.keymap.set('n', '<leader>ft', builtin.builtin, { desc = 'Telescope builtin' 
 vim.keymap.set('n', '<tab>', ':bn<cr>', opts)
 vim.keymap.set('n', '<s-tab>', ':bp<cr>', opts)
 vim.keymap.set('n', '<leader>bd', ':bd<cr>', opts)
---
+
+-- Neotree
+vim.keymap.set('n', 'R', ':Neotree reveal<CR>')
+
 -----------------
 -- Visual mode --
 -----------------
