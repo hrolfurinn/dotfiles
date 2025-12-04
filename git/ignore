@@ -1,3 +1,5 @@
 .DS_Store
 # Jupyter notebook IDE
 .virtual_documents
+
+**/.claude/settings.local.json
