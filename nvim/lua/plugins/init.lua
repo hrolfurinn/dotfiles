@@ -69,6 +69,16 @@ require("lazy").setup({
     opts = {},
   },
   {
+    'sainnhe/everforest',
+    lazy = false,
+    priority = 1000,
+    config = function()
+      vim.g.everforest_enable_italic = false
+      vim.g.everforest_diagnostic_text_highlight = true
+      vim.g.everforest_disable_italic_comment = true
+    end
+  },
+  {
     "lewis6991/gitsigns.nvim",
   },
   --Telescope finder
