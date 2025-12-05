@@ -34,9 +34,11 @@ require("lazy").setup({
   -- Code snippet engine
   {
     "L3MON4D3/LuaSnip",
-    version = "v2.*",
-  },
-  -- Bufferline (tabs displayed in typical GUI IDE manner)
+    -- follow latest release.
+    version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
+    -- install jsregexp (optional!).
+    build = "make install_jsregexp"
+  }, -- Bufferline (tabs displayed in typical GUI IDE manner)
   {
     "akinsho/bufferline.nvim",
     dependencies = { "nvim-tree/nvim-web-devicons" },
