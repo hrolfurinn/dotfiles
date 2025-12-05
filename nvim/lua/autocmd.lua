@@ -7,11 +7,13 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   end
 })
 
--- Taken from nvim-lint setup guide
+-- Taken from nvim-lint setup guide, with fixes from ChatGPT to restrict filetype
 vim.api.nvim_create_autocmd({ "BufWritePost" }, {
   callback = function()
-    -- try_lint without arguments runs the linters defined in `linters_by_ft`
-    -- for the current filetype
-    require("lint").try_lint()
+    local ft = vim.bo.filetype
+    local linters = require("lint").linters_by_ft[ft]
+    if linters and #linters > 0 then
+      require("lint").try_lint()
+    end
   end,
 })

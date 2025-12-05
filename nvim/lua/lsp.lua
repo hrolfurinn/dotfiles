@@ -13,6 +13,7 @@ local lspconfig = require("lspconfig")
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 local on_attach = function(client, bufnr)
   require('keymaps').lsp_keymaps(bufnr)
+  vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
 end
 local function make_config(opts)
   return vim.tbl_deep_extend("force", { on_attach = on_attach, capabilities = capabilities }, opts or {})
@@ -99,6 +100,14 @@ require('mason-lspconfig').setup({
   -- full list of options at https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
   ensure_installed = lsp_servers,
 })
+
+vim.diagnostic.config({
+  virtual_text = true, -- show inline errors
+  signs = true,        -- show signs in the gutter
+  underline = true,    -- underline errors
+  update_in_insert = false,
+})
+
 
 -- NVIM lint
 -- TODO: should this be in a new file?
