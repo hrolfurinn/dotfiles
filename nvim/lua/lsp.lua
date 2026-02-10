@@ -76,9 +76,19 @@ lsp_overrides = {
       end,
     },
   },
+  -- Ensure that dynamicRegistration is enabled! This allows the LS to take into account actions like the
+  -- Create Unresolved File code action, resolving completions for unindexed code blocks, ...
+  -- source: https://github.com/Feel-ix-343/markdown-oxide/blob/6dcf444da28b7c9564988e4d6bbf29cdf9bd5778/docs/Markdown%20Oxide%20Docs/README.md?plain=1#L85
+  markdown_oxide = {
+    workspace = {
+      didChangeWatchedFiles = {
+        dynamicRegistration = true,
+      }
+    }
+  }
 }
 
-lsp_servers = { 'pylsp', 'lua_ls', 'rust_analyzer', 'ts_ls', 'bashls', 'eslint', 'ruff', 'texlab'}
+lsp_servers = { 'pylsp', 'lua_ls', 'rust_analyzer', 'ts_ls', 'bashls', 'eslint', 'ruff', 'texlab', 'markdown_oxide' }
 
 for _, server_name in ipairs(lsp_servers) do
   vim.lsp.config(server_name, make_config(lsp_overrides[server_name]))
@@ -95,6 +105,7 @@ require('mason').setup({
   -- log_level = vim.log.levels.DEBUG,
 })
 
+-- TODO: There's a default lspconfig now
 require('mason-lspconfig').setup({
   -- A list of servers to automatically install if they're not already installed
   -- full list of options at https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
