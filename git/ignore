@@ -2,5 +2,6 @@
 # Jupyter notebook IDE
 .virtual_documents
 .venv
+.tool-versions
 
 **/.claude/settings.local.json
