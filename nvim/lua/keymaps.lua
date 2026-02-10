@@ -7,8 +7,8 @@ local M = {}
 
 -- define common options
 local opts = {
-  noremap = true, -- non-recursive
-  silent = true,  -- do not show message
+    noremap = true, -- non-recursive
+    silent = true, -- do not show message
 }
 
 vim.g.mapleader = " " --idea taken from lazy nvim example
@@ -74,14 +74,14 @@ vim.keymap.set('n', 'R', ':Neotree reveal<CR>')
 --  LSP  mode  --
 -----------------
 M.lsp_keymaps = function(bufnr)
-  local bufopts = function(desc)
-    return vim.tbl_extend('force', opts, { buffer = bufnr, desc = desc })
-  end
+    local bufopts = function(desc)
+        return vim.tbl_extend('force', opts, { buffer = bufnr, desc = desc })
+    end
 
-  vim.keymap.set('n', '<leader>fr', builtin.lsp_references, bufopts('Telescope LSP references'))
-  vim.keymap.set('n', '<leader>rr', vim.lsp.buf.rename, bufopts('LSP rename'))
-  vim.keymap.set('n', 'gd', builtin.lsp_definitions, bufopts('Telescope LSP definition'))
-  vim.keymap.set('n', 'gD', builtin.lsp_implementations, bufopts('Telescope LSP implementation'))
+    vim.keymap.set('n', '<leader>fr', builtin.lsp_references, bufopts('Telescope LSP references'))
+    vim.keymap.set('n', '<leader>rr', vim.lsp.buf.rename, bufopts('LSP rename'))
+    vim.keymap.set('n', 'gd', builtin.lsp_definitions, bufopts('Telescope LSP definition'))
+    vim.keymap.set('n', 'gD', builtin.lsp_implementations, bufopts('Telescope LSP implementation'))
 end
 
 return M
