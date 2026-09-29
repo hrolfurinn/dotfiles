@@ -127,7 +127,9 @@ require("lazy").setup({
                 local cache = vim.env.XDG_CACHE_HOME or (vim.env.HOME .. "/.cache")
                 return cache .. "/latex" .. info.root
             end
-            vim.g.vimtex_view_method = "zathura_simple"
+            vim.g.vimtex_view_method = "skim"
+            vim.g.vimtex_view_skim_sync = 1
+            vim.g.vimtex_view_skim_activate = 1
             vim.g.vimtex_compiler_latexmk = { aux_dir = build_dir, out_dir = build_dir }
             -- vim.g.vimtex_view_zathura_use_synctex = 0  -- if D-Bus won't cooperate
         end
