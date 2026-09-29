@@ -88,7 +88,7 @@ lsp_overrides = {
     }
 }
 
-lsp_servers = { 'pylsp', 'lua_ls', 'rust_analyzer', 'ts_ls', 'bashls', 'eslint', 'ruff', 'texlab', 'markdown_oxide' }
+lsp_servers = { 'pylsp', 'lua_ls', 'rust_analyzer', 'ts_ls', 'bashls', 'eslint', 'ruff', 'texlab', 'markdown_oxide', 'tinymist' }
 
 for _, server_name in ipairs(lsp_servers) do
     vim.lsp.config(server_name, make_config(lsp_overrides[server_name]))

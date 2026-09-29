@@ -3,5 +3,6 @@
 .virtual_documents
 .venv
 .tool-versions
+*cache*
 
 **/.claude/settings.local.json
