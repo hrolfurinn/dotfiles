@@ -118,14 +118,17 @@ require("lazy").setup({
             mappings = true,
         }
     },
-    -- LaTex compiler
+    -- LaTeX compiler
     {
         "lervag/vimtex",
         lazy = false, -- we don't want to lazy load VimTeX
-        -- tag = "v2.15", -- uncomment to pin to a specific release
         init = function()
-            -- VimTeX configuration goes here, e.g.
-            vim.g.vimtex_view_method = "zathura"
+            local function build_dir(info)
+                local cache = vim.env.XDG_CACHE_HOME or (vim.env.HOME .. "/.cache")
+                return cache .. "/latex" .. info.root
+            end
+            vim.g.vimtex_view_method = "zathura_simple"
+            vim.g.vimtex_compiler_latexmk = { aux_dir = build_dir, out_dir = build_dir }
+            -- vim.g.vimtex_view_zathura_use_synctex = 0  -- if D-Bus won't cooperate
         end
-    }
-})
+    } })
