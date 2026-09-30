@@ -1,0 +1,15 @@
+#!/bin/sh
+# Open a new iTerm2 window and run the given command (if any) in its shell.
+exec osascript - "$@" <<'APPLESCRIPT'
+on run argv
+  set cmd to ""
+  repeat with a in argv
+    set cmd to cmd & quoted form of (a as text) & " "
+  end repeat
+  tell application "iTerm2"
+    activate
+    set w to (create window with default profile)
+    if cmd is not "" then tell current session of w to write text cmd
+  end tell
+end run
+APPLESCRIPT

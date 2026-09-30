@@ -1,0 +1,17 @@
+#!/bin/sh
+# Run a command in a new window of the most recently used tmux session and
+# bring it to the front. Starts tmux (in a new iTerm window) if needed.
+[ $# -gt 0 ] || { echo "usage: tmux-run cmd [args...]" >&2; exit 2; }
+
+session=$(tmux list-sessions -F '#{session_last_attached} #{session_id}' 2>/dev/null |
+  sort -rn | head -n 1 | cut -d' ' -f2)
+
+[ -n "$session" ] || exec iterm-new-window tmux new-session "$@"
+
+pane=$(tmux new-window -P -F '#{pane_id}' -t "$session:" "$@")
+
+if tmux list-clients -t "$session" -F x | grep -q .; then
+  exec tmux-focus-pane "$pane"
+else
+  exec iterm-new-window tmux attach -t "$session"
+fi

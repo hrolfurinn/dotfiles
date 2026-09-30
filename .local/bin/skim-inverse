@@ -1,0 +1,12 @@
+#!/bin/sh
+# Skim inverse-search hook. Skim → Preferences → Sync → Arguments: %line "%file"
+export PATH="$HOME/.local/bin:/opt/homebrew/bin:$PATH"
+log="${XDG_STATE_HOME:-$HOME/.local/state}/skim-inverse.log"
+mkdir -p "$(dirname "$log")"
+echo "--- $(date '+%F %T') line=$1 file=$2" >> "$log"
+
+nvim-open "$2" "$1" >> "$log" 2>&1
+status=$?
+[ "$status" -eq 0 ] ||
+  osascript -e "display notification \"exit $status, see $log\" with title \"Skim inverse search failed\""
+exit "$status"
