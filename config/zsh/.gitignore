@@ -1,0 +1,6 @@
+plugins/*
+secrets.zsh
+work.zsh
+.zcompdump*
+.zsh_history
+.zsh_sessions/
