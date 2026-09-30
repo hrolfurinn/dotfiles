@@ -1,0 +1,14 @@
+#!/bin/sh
+# Open file $1 at line $2 in Neovim: jump in a running instance that has it
+# loaded and focus it, otherwise start Neovim in a new tmux window.
+file=$1 line=${2:-1}
+[ -n "$file" ] || { echo "usage: nvim-open file [line]" >&2; exit 2; }
+
+if server=$(nvim-server-for "$file"); then
+  esc=$(printf %s "$file" | sed 's/[ \\]/\\&/g')
+  nvim --server "$server" --remote-send "<C-\\><C-N>:drop $esc | $line | normal! zz<CR>"
+  pane=$(nvim --server "$server" --remote-expr 'get(environ(), "TMUX_PANE", "")')
+  exec tmux-focus-pane "$pane"
+fi
+
+exec tmux-run nvim "+$line" "$file"

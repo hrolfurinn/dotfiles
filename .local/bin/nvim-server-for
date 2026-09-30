@@ -1,0 +1,11 @@
+#!/bin/sh
+# Print the socket of a running Neovim that has file $1 loaded; exit 1 if none.
+file=$1
+dir=${XDG_RUNTIME_DIR:-${TMPDIR:-/tmp}}
+find "$dir" -maxdepth 3 -type s -name 'nvim.*' 2>/dev/null | {
+  while read -r s; do
+    [ "$(nvim --server "$s" --remote-expr "bufloaded('$file')" 2>/dev/null)" = 1 ] &&
+      { echo "$s"; exit 0; }
+  done
+  exit 1
+}
