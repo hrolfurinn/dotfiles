@@ -1,0 +1,9 @@
+# Repo files that must never be linked into ~ (this list replaces stow's defaults)
+\.git
+^/\.gitignore
+^/\.stowrc
+^/\.stow-local-ignore
+^/README.*
+^/LICENSE.*
+^/install\.sh
+\.DS_Store

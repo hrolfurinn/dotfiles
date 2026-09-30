@@ -1,55 +1,53 @@
 #!/usr/bin/env bash
-# Symlink these dotfiles into place with GNU Stow. Safe to re-run.
+# Link this repo into ~ with GNU Stow. The repo mirrors ~:
+#   .config/nvim/  -> ~/.config/nvim   (whole directory is one link)
+#   .zshenv        -> ~/.zshenv
+#   .local/bin/foo -> ~/.local/bin/foo
 #
-#   config/  -> $XDG_CONFIG_HOME  one link per top-level entry (nvim, zsh, ...)
-#   home/    -> ~                 one link per FILE (--no-folding), so real
-#                                 dirs like ~/.ssh or ~/.local/bin never turn
-#                                 into links into this repo
-#
-# Stow never overwrites anything: if a file is in the way it reports a
-# conflict and changes nothing. Run with -n for a dry run.
-# Use this script rather than calling stow by hand, since the flags matter.
+# Safe to re-run; -n for a dry run. Stow never overwrites anything: if a file
+# is in the way it reports a conflict and changes nothing. It only turns a
+# directory into a link if that directory doesn't exist yet, so the ones in
+# REAL_DIRS are created first and always stay real directories.
 
 set -euo pipefail
+cd "$(dirname "${BASH_SOURCE[0]}")"
 
-DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
-DRY_RUN=0
-[[ ${1:-} == -n ]] && DRY_RUN=1
+for f in .stowrc .stow-local-ignore; do
+  [[ -f $f ]] || { echo "missing $f in $PWD, refusing to run" >&2; exit 1; }
+done
+
+REAL_DIRS=(
+  "$HOME/.config"
+  "$HOME/.local/bin"
+  "$HOME/.local/share"
+  "$HOME/.local/state/zsh"
+  "$HOME/.cache/zsh"
+  "$HOME/.ssh"
+)
 
 if ! command -v stow >/dev/null 2>&1; then
   echo "stow not found. Install it first: brew install stow  (Linux: sudo apt install stow)" >&2
   exit 1
 fi
 
-args=(--verbose --dir="$DOTFILES" --ignore='\.DS_Store' --restow)
-if (( DRY_RUN )); then
-  args+=(--simulate)
-  echo "dry run: nothing will change"
-fi
-
-echo "==> config/ -> $CONFIG_HOME"
-(( DRY_RUN )) || mkdir -p "$CONFIG_HOME"
-stow "${args[@]}" --target="$CONFIG_HOME" config
-
-if [[ -d $DOTFILES/home ]]; then
-  echo "==> home/ -> ~"
-  stow "${args[@]}" --target="$HOME" --no-folding home
-fi
-
-if (( ! DRY_RUN )); then
-  mkdir -p "${XDG_STATE_HOME:-$HOME/.local/state}/zsh" "${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
-fi
-
-echo "==> checks"
-for f in config/zsh/secrets.zsh config/zsh/work.zsh; do
-  [[ -e $DOTFILES/$f ]] || echo "note: $f is missing (gitignored, recreate it by hand if needed)"
+for d in "${REAL_DIRS[@]}"; do
+  if [[ ! -d $d ]]; then
+    echo "mkdir   $d"
+    mkdir -p "$d"
+  fi
 done
-[[ -d ${ZSH:-$HOME/.oh-my-zsh} ]] || echo "note: oh-my-zsh is not installed: https://ohmyz.sh/#install"
-if [[ -d $DOTFILES/home/.local/bin ]]; then
-  case ":$PATH:" in
-    *":$HOME/.local/bin:"*) ;;
-    *) echo "note: ~/.local/bin is not on PATH" ;;
-  esac
-fi
+chmod 700 "$HOME/.ssh"
+
+args=(--verbose --restow --target="$HOME")
+[[ ${1:-} == -n ]] && args+=(--simulate)
+stow "${args[@]}" .
+
+for f in .config/zsh/secrets.zsh .config/zsh/work.zsh; do
+  [[ -e $f ]] || echo "note    $f is missing (gitignored, recreate it by hand if needed)"
+done
+[[ -d ${ZSH:-$HOME/.oh-my-zsh} ]] || echo "note    oh-my-zsh is not installed: https://ohmyz.sh/#install"
+case ":$PATH:" in
+  *":$HOME/.local/bin:"*) ;;
+  *) echo "note    ~/.local/bin is not on PATH" ;;
+esac
 echo "done"
